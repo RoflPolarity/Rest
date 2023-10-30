@@ -28,6 +28,8 @@ public class auth {
     @CrossOrigin
     @PostMapping("/api/login")
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
+        System.out.println(request.getLogin());
+        System.out.println(request.getPassword());
         employees employees = employeesService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList().get(0);
         guests guests = guestsService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList().get(0);
         if (employees!=null){
