@@ -28,20 +28,21 @@ public class auth {
     @CrossOrigin
     @PostMapping("/api/login")
     public ResponseEntity<AuthResponse> auth(@RequestBody AuthRequest request) {
-        System.out.println(request.getLogin());
-        System.out.println(request.getPassword());
-        employees employees = employeesService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList().get(0);
-        guests guests = guestsService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList().get(0);
-        if (employees!=null){
-            employees.setToken(jwtService.generateToken(employees));
-            employeesService.save(employees);
+        List<employees> employees = employeesService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList();
+        List<guests> guests = guestsService.findAll().stream().filter(x -> (x.getEMail()+x.getPassword()).hashCode()==(request.getLogin()+request.getPassword()).hashCode()).toList();
+        if (employees.size()>0){
+            employees employee = employees.get(0);
+            employee.setToken(jwtService.generateToken(employee));
+            employeesService.save(employee);
             return ResponseEntity.ok(AuthResponse.builder()
                     .user(employees)
                     .status(true)
                     .build());
-        }else if(guests!=null){
-            guests.setToken(jwtService.generateToken(guests));
-            guestsService.save(guests);
+        }else if(guests.size()>0){
+            System.out.println(guests.size());
+            guests guest = guests.get(0);
+            guest.setToken(jwtService.generateToken(guest));
+            guestsService.save(guest);
             return ResponseEntity.ok(AuthResponse.builder()
                     .user(guests)
                     .status(true)
@@ -52,5 +53,20 @@ public class auth {
                     .status(false)
                     .build());
         }
+    }
+
+    @CrossOrigin
+    @PostMapping("api/register")
+    public ResponseEntity<RegisterResponse> register(@RequestBody RegisterRequest request){
+        guests guests = new guests(request.getFirstName(),
+                request.getMiddleName(),
+                request.getLastName(),
+                request.getPhoneNumber(),
+                request.getE_mail(),
+                request.getPassword());
+        guests.setToken("0");
+        guestsService.save(guests);
+        System.out.println(guests);
+        return ResponseEntity.ok(RegisterResponse.builder().user(guests).status(true).build());
     }
 }

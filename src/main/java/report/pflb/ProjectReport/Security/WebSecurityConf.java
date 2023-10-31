@@ -63,6 +63,7 @@ public class WebSecurityConf {
                     @Override
                     public void customize(AuthorizeHttpRequestsConfigurer<HttpSecurity>.AuthorizationManagerRequestMatcherRegistry authorizationManagerRequestMatcherRegistry) {
                         authorizationManagerRequestMatcherRegistry.requestMatchers("/api/login").permitAll();
+                        authorizationManagerRequestMatcherRegistry.requestMatchers("/api/register").permitAll();
                         authorizationManagerRequestMatcherRegistry.anyRequest().authenticated();
                     }
                 }).sessionManagement(new Customizer<SessionManagementConfigurer<HttpSecurity>>() {
@@ -74,29 +75,5 @@ public class WebSecurityConf {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
-
-    @Autowired
-    public void LdapConf(AuthenticationManagerBuilder auth) throws Exception{
-        auth.ldapAuthentication()
-                .userDnPatterns("uid={0},ou=people")
-                .userSearchBase("")
-                .userSearchFilter("(sAMAccountName={0})")
-                .contextSource(contextSource)
-                .passwordCompare()
-                .passwordEncoder(new BCryptPasswordEncoder())
-                .passwordAttribute("userPassword");
-    }
-    @Bean
-    public LdapContextSource contextSource(AuthenticationManagerBuilder auth)throws Exception {
-        LdapContextSource contextSource = new LdapContextSource();
-        contextSource.setUrl("ldaps://adds.pflb.local:636");
-        contextSource.setUserDn("report@pflb.local");
-        contextSource.setPassword("Nfl1ZQnXjzncil1xoVdp");
-        contextSource.setBase("");
-        contextSource.setPooled(true);
-        contextSource.afterPropertiesSet();
-        return contextSource;
-    }
-
 
 }

@@ -43,6 +43,16 @@ public class guests implements UserDetails {
     @JoinColumn(name = "user_id")
     private user user;
 
+    public guests(String first_name, String middle_name, String lastName, String phoneNumber, String EMail,
+                  String password){
+        this.first_name = first_name;
+        this.middle_name = middle_name;
+        this.lastName = lastName;
+        this.phoneNumber = phoneNumber;
+        this.password = password;
+        this.EMail = EMail;
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         List<GrantedAuthority> authorities = new ArrayList<>();

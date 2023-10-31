@@ -9,8 +9,8 @@ const Login = () => {
     e.preventDefault();
 
     const data = {
-      email: email,
-      password: password
+        login: email,
+        password: password
     };
 
     fetch('http://localhost:8080/api/login', {
